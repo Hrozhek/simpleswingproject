@@ -1,7 +1,7 @@
 package service.account;
 
 import dto.account.AccountDto;
-import model.Account;
+import model.data.Account;
 
 import java.util.List;
 

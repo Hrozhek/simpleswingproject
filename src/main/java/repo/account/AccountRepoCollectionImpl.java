@@ -1,24 +1,23 @@
 package repo.account;
 
-import core.exceptions.EntityNotFoundException;
-import model.Account;
+import model.data.Account;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public final class AccountRepoCollectionImpl implements AccountRepo {
-    private static AccountRepoCollectionImpl instance;
-    private List<Account> storage;
+    private static volatile AccountRepoCollectionImpl instance;
+    private final List<Account> storage;
 
     private AccountRepoCollectionImpl() {
         storage = new ArrayList<>();
     }
 
     public static AccountRepoCollectionImpl getInstance() {
-        synchronized (AccountRepoCollectionImpl.class) {
-            if (instance == null) {
-                instance = new AccountRepoCollectionImpl();
+        if (instance == null) {
+            synchronized (AccountRepoCollectionImpl.class) {
+                if (instance == null)
+                    instance = new AccountRepoCollectionImpl();
             }
         }
         return instance;
@@ -28,14 +27,14 @@ public final class AccountRepoCollectionImpl implements AccountRepo {
     public Account findById(long id) {
         return storage.stream()
             .filter(account -> account.getId() == id)
-            .findAny().orElseThrow(() -> new EntityNotFoundException(id));
+            .findAny().orElse(null);
     }
 
     @Override
-    public Optional<Account> findByName(String name) {
+    public Account findByName(String name) {
         return storage.stream()
             .filter(account -> account.getName().equals(name))
-            .findAny();
+            .findAny().orElse(null);
     }
 
     @Override

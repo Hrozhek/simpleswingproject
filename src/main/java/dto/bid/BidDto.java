@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 public class BidDto {
-    private Long accountId;
-    private String stockName;
-    private BigDecimal bidPrice;
-    private long stockQuantity;
+    private final Long accountId;
+    private final String stockName;
+    private final BigDecimal bidPrice;
+    private final long stockQuantity;
 }

@@ -4,7 +4,7 @@ import dto.account.AccountDto;
 import dto.bid.BidDto;
 import org.junit.jupiter.api.Test;
 import repo.account.AccountRepoCollectionImpl;
-import repo.bid.BidRepoCollectionImpl;
+import repo.bid.BidRepoMapImpl;
 import service.account.AccountService;
 import service.account.AccountServiceImpl;
 import service.bid.BidService;
@@ -17,7 +17,7 @@ public class IntegrationTest {
     @Test
     public static void test() {
         AccountService accountService = new AccountServiceImpl(AccountRepoCollectionImpl.getInstance());
-        BidService bidService = new BidServiceImpl(BidRepoCollectionImpl.getInstance(), accountService);
+        BidService bidService = new BidServiceImpl(BidRepoMapImpl.getInstance(), accountService);
         AccountDto testAcc = new AccountDto("test");
         long testAccountId = accountService.save(testAcc);
         BidDto testBid = new BidDto(testAccountId, "TEST", BigDecimal.valueOf(150.00), 3);

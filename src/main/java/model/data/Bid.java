@@ -1,16 +1,16 @@
-package model;
+package model.data;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Getter
 @Builder
-@ToString
+@EqualsAndHashCode
 public final class Bid {
-    private final Long id;
+    @EqualsAndHashCode.Exclude private final Long id;
     private final Long accountId;
 
     private final String stockName;

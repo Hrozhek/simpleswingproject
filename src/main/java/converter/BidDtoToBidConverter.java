@@ -1,7 +1,7 @@
 package converter;
 
 import dto.bid.BidDto;
-import model.Bid;
+import model.data.Bid;
 import utils.IdGenerator;
 import utils.PurchaseCostCalculator;
 

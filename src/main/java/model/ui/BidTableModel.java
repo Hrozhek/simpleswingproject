@@ -1,7 +1,7 @@
-package uihelpers;
+package model.ui;
 
 import lombok.Setter;
-import model.Bid;
+import model.data.Bid;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -18,13 +18,13 @@ public class BidTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int columnNumber) {
         switch (columnNumber) {
-        case (0):
+        case 0:
             return "id";
-        case (1):
+        case 1:
             return "Stock name";
-        case (2):
+        case 2:
             return "Stock quantity";
-        case (3):
+        case 3:
             return "Cost";
         default:
             return "Unknown column";
@@ -46,13 +46,13 @@ public class BidTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Bid bid = bids.get(rowIndex);
         switch (columnIndex) {
-        case (0):
+        case 0:
             return bid.getId();
-        case (1):
+        case 1:
             return bid.getStockName();
-        case (2):
+        case 2:
             return bid.getStockQuantity();
-        case (3):
+        case 3:
             return bid.getPurchaseCost();
         default:
             return null;

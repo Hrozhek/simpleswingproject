@@ -1,7 +1,7 @@
 package converter;
 
 import dto.account.AccountDto;
-import model.Account;
+import model.data.Account;
 import utils.IdGenerator;
 
 public class AccountDtoToAccountConverter {

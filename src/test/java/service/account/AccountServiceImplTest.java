@@ -1,13 +1,15 @@
 package service.account;
 
 import org.junit.jupiter.api.Test;
+import repo.account.AccountRepo;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AccountServiceImplTest {
+    private AccountRepo accountRepo;
 
     @Test
-    void getById() {
+    void getById_provide() {
     }
 
     @Test
@@ -15,6 +17,6 @@ class AccountServiceImplTest {
     }
 
     @Test
-    void save() {
+    void save_provideCorrectDto_saveSuccessfully() {
     }
 }

@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AccountDto {
-    private String name;
+    private final String name;
 }

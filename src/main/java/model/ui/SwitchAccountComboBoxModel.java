@@ -1,6 +1,6 @@
-package uihelpers;
+package model.ui;
 
-import model.Account;
+import model.data.Account;
 
 import javax.swing.DefaultComboBoxModel;
 import java.util.List;

@@ -1,6 +1,6 @@
 package repo.bid;
 
-import model.Bid;
+import model.data.Bid;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package uidelegates;
 
-import core.Constants;
+import core.ApplicationConstants;
 import core.exceptions.DuplicateAccountNameException;
 import dto.account.AccountDto;
 import service.account.AccountService;
@@ -24,7 +24,7 @@ public class AddAccountDialog extends JDialog {
     private JButton cancelButton;
     private JButton saveButton;
 
-    private boolean hasNewAccount = false;
+    private boolean newAccountAvailable;
 
     public AddAccountDialog(JFrame owner, AccountService accountService) {
         super(owner, "Add new account", true);
@@ -33,12 +33,13 @@ public class AddAccountDialog extends JDialog {
     }
 
     private void initUI() {
+        this.setResizable(false);
         Container rootContainer = getContentPane();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         rootContainer.setLayout(new BoxLayout(rootContainer, BoxLayout.Y_AXIS));
 
         nameTextField = new JTextField();
-        nameTextField.setPreferredSize(Constants.TEXT_FIELD_DIMENSION);
+        nameTextField.setPreferredSize(ApplicationConstants.TEXT_FIELD_DIMENSION);
         nameTextField.setToolTipText("Enter account name");
 
         JPanel buttonPanel = new JPanel();
@@ -57,8 +58,8 @@ public class AddAccountDialog extends JDialog {
         setVisible(true);
     }
 
-    public boolean hasNewAccount() {
-        return hasNewAccount;
+    public boolean isNewAccountAvailable() {
+        return newAccountAvailable;
     }
 
     private class SaveActionListener implements ActionListener {
@@ -67,7 +68,7 @@ public class AddAccountDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent event) {
             String name = nameTextField.getText();
-            if (Constants.EMPTY_STRING.equals(name)) {
+            if (ApplicationConstants.EMPTY_STRING.equals(name)) {
                 String message = "Please provide correct name for the account";
                 showIncorrectNameWarning(message);
                 return;
@@ -75,10 +76,10 @@ public class AddAccountDialog extends JDialog {
             AccountDto accountDto = new AccountDto(name);
             try {
                 accountService.save(accountDto);
-                hasNewAccount = true;
+                newAccountAvailable = true;
                 dispose();
             } catch (DuplicateAccountNameException exception) {
-                String message = "Account " + name + " already exist. Please, pick another name";
+                String message = "Account \"" + name + "\" already exists. Please, pick another name";
                 showIncorrectNameWarning(message);
             }
         }

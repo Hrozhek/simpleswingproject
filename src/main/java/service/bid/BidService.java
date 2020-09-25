@@ -1,7 +1,7 @@
 package service.bid;
 
 import dto.bid.BidDto;
-import model.Bid;
+import model.data.Bid;
 
 import java.util.List;
 

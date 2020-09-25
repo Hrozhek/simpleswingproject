@@ -1,9 +1,9 @@
 package uidelegates;
 
-import core.Constants;
-import uihelpers.BidTableModel;
-import uihelpers.SwitchAccountComboBoxModel;
-import model.Account;
+import core.ApplicationConstants;
+import model.ui.BidTableModel;
+import model.ui.SwitchAccountComboBoxModel;
+import model.data.Account;
 import service.account.AccountService;
 import service.bid.BidService;
 
@@ -22,6 +22,8 @@ import java.awt.Container;
 import java.awt.GridBagLayout;
 
 public class RootWindow extends JFrame {
+    private static final String APP_TITLE = "Simple Swing application";
+
     private AccountService accountService;
     private BidService bidService;
     private long currentAccountId;
@@ -34,8 +36,8 @@ public class RootWindow extends JFrame {
     private JButton addBidButton;
 
     public RootWindow(AccountService accountService, BidService bidService) {
-        super(Constants.APP_TITLE);
-        currentAccountId = Constants.EMPTY_ENTITY_ID;
+        super(APP_TITLE);
+        currentAccountId = ApplicationConstants.EMPTY_ENTITY_ID;
         this.accountService = accountService;
         this.bidService = bidService;
         initUI();
@@ -51,7 +53,7 @@ public class RootWindow extends JFrame {
         switchAccountComboBoxModel = new SwitchAccountComboBoxModel();
         switchAccountBox = new JComboBox<>(switchAccountComboBoxModel);
         switchAccountBox.setToolTipText("Select account");
-        switchAccountBox.setPreferredSize(Constants.TEXT_FIELD_DIMENSION);
+        switchAccountBox.setPreferredSize(ApplicationConstants.TEXT_FIELD_DIMENSION);
         userPanel.add(switchAccountBox);
 
         addAccountButton = new JButton("Add new account");
@@ -75,17 +77,17 @@ public class RootWindow extends JFrame {
     private void initActionListeners() {
         addAccountButton.addActionListener(e -> {
             AddAccountDialog addAccountDialog = new AddAccountDialog(this, accountService);
-            if (addAccountDialog.hasNewAccount())
+            if (addAccountDialog.isNewAccountAvailable())
                 switchAccountComboBoxModel.updateComboBox(accountService.getAll());
         });
 
         addBidButton.addActionListener(event -> {
-            if (currentAccountId == Constants.EMPTY_ENTITY_ID) {
+            if (currentAccountId == ApplicationConstants.EMPTY_ENTITY_ID) {
                 showWarning();
                 return;
             }
             AddBidDialog addBidDialog = new AddBidDialog(this, currentAccountId, bidService);
-            if (addBidDialog.hasNewBid()) {
+            if (addBidDialog.isNewBidAvailable()) {
                 bidTableModel.setBids(bidService.getAllByAccountId(currentAccountId));
                 bidTableModel.fireTableDataChanged();
             }
@@ -93,6 +95,8 @@ public class RootWindow extends JFrame {
 
         switchAccountBox.addActionListener(e -> {
             Account currentAccount = (Account) switchAccountBox.getSelectedItem();
+            if (currentAccount == null)
+                return;
             currentAccountId = currentAccount.getId();
             bidTableModel.setBids(bidService.getAllByAccountId(currentAccountId));
             bidTableModel.fireTableDataChanged();
@@ -111,6 +115,7 @@ public class RootWindow extends JFrame {
         selectAccountWarning.getContentPane().add(okButton);
         selectAccountWarning.setModal(true);
         selectAccountWarning.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        selectAccountWarning.setResizable(false);
         selectAccountWarning.pack();
         selectAccountWarning.setVisible(true);
     }
