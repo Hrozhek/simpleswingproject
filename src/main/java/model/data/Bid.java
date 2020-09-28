@@ -3,6 +3,7 @@ package model.data;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import utils.PurchaseCostCalculator;
 
 import java.math.BigDecimal;
 
@@ -16,5 +17,8 @@ public final class Bid {
     private final String stockName;
     private final BigDecimal bidPrice;
     private final long stockQuantity;
-    private BigDecimal purchaseCost;
+
+    public BigDecimal getPurchaseCost() {
+        return PurchaseCostCalculator.calculate(bidPrice, stockQuantity);
+    }
 }

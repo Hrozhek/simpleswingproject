@@ -1,9 +1,9 @@
 package repo.account;
 
+import dto.account.AccountDto;
 import model.data.Account;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AccountRepo {
 
@@ -11,7 +11,7 @@ public interface AccountRepo {
 
     Account findByName(String name);
 
-    void save(Account account);
+    long save(AccountDto accountDto);
 
     List<Account> findAll();
 }

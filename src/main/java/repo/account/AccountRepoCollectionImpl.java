@@ -1,5 +1,7 @@
 package repo.account;
 
+import converter.AccountDtoToAccountConverter;
+import dto.account.AccountDto;
 import model.data.Account;
 
 import java.util.ArrayList;
@@ -43,7 +45,9 @@ public final class AccountRepoCollectionImpl implements AccountRepo {
     }
 
     @Override
-    public void save(Account account) {
+    public long save(AccountDto accountDto) {
+        Account account = AccountDtoToAccountConverter.convert(accountDto);
         storage.add(account);
+        return account.getId();
     }
 }

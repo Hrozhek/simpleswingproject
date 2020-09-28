@@ -1,5 +1,6 @@
 package repo.bid;
 
+import dto.bid.BidDto;
 import model.data.Bid;
 
 import java.util.List;
@@ -10,5 +11,5 @@ public interface BidRepo {
 
     List<Bid> findAllByAccountId(long id);
 
-    void save(Bid bid);
+    long save(BidDto bidDto);
 }

@@ -1,6 +1,5 @@
 package service.account;
 
-import converter.AccountDtoToAccountConverter;
 import core.exceptions.DuplicateAccountNameException;
 import core.exceptions.EntityNotFoundException;
 import dto.account.AccountDto;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AccountServiceImpl implements AccountService {
-    private AccountRepo repo;
+    private final AccountRepo repo;
 
     public AccountServiceImpl(AccountRepo repo) {
         this.repo = repo;
@@ -41,8 +40,6 @@ public class AccountServiceImpl implements AccountService {
         if (repo.findByName(accountDto.getName()) != null)
             throw new DuplicateAccountNameException(accountDto.getName());
 
-        Account account = AccountDtoToAccountConverter.convert(accountDto);
-        repo.save(account);
-        return account.getId();
+        return repo.save(accountDto);
     }
 }

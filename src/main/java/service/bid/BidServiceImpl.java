@@ -1,6 +1,5 @@
 package service.bid;
 
-import converter.BidDtoToBidConverter;
 import core.ApplicationConstants;
 import core.exceptions.EntityNotFoundException;
 import dto.bid.BidDto;
@@ -13,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BidServiceImpl implements BidService {
-    private BidRepo repo;
-    private AccountService accountService;
+    private final BidRepo repo;
+    private final AccountService accountService;
 
     public BidServiceImpl(BidRepo repo, AccountService accountService) {
         this.repo = repo;
@@ -43,9 +42,7 @@ public class BidServiceImpl implements BidService {
     public Long save(BidDto bidDto) {
         tryGetAccountById(bidDto.getAccountId());
 
-        Bid bid = BidDtoToBidConverter.convert(bidDto);
-        repo.save(bid);
-        return bid.getId();
+        return repo.save(bidDto);
     }
 
     private void tryGetAccountById(Long accountId) throws EntityNotFoundException {

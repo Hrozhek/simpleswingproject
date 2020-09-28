@@ -45,9 +45,9 @@ public class AddBidDialog extends JDialog {
         this.bidService = bidService;
         prepareTextFieldsAndButtons();
         initListeners();
-        initUI_SpringLayout_Not_Working();
+//        initUI_SpringLayout_Not_Working();
         //todo
-//        initUI();
+        initUI();
     }
 
     private void prepareTextFieldsAndButtons() {

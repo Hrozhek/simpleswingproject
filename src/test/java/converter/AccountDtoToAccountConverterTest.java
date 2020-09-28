@@ -11,7 +11,7 @@ class AccountDtoToAccountConverterTest {
     private Account correctAccount;
 
     @BeforeEach
-    private void setUp() {
+    private void init() {
         correctAccount = new Account(1000L, ACCOUNT_NAME);
     }
 

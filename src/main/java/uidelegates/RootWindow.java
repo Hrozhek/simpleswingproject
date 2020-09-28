@@ -24,8 +24,8 @@ import java.awt.GridBagLayout;
 public class RootWindow extends JFrame {
     private static final String APP_TITLE = "Simple Swing application";
 
-    private AccountService accountService;
-    private BidService bidService;
+    private final AccountService accountService;
+    private final BidService bidService;
     private long currentAccountId;
     private BidTableModel bidTableModel;
     private SwitchAccountComboBoxModel switchAccountComboBoxModel;

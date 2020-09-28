@@ -1,5 +1,7 @@
 package repo.bid;
 
+import converter.BidDtoToBidConverter;
+import dto.bid.BidDto;
 import model.data.Bid;
 
 import java.util.ArrayList;
@@ -37,17 +39,19 @@ public final class BidRepoMapImpl implements BidRepo {
     public List<Bid> findAllByAccountId(long id) {
         List<Bid> bids = bidsByAccountMap.get(id);
         if (bids == null)
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         return bids;
     }
 
     @Override
-    public void save(Bid bid) {
+    public long save(BidDto bidDto) {
+        Bid bid = BidDtoToBidConverter.convert(bidDto);
         bidMap.put(bid.getId(), bid);
         List<Bid> bidsByAccount = bidsByAccountMap.get(bid.getAccountId());
         if (bidsByAccount == null)
             bidsByAccount = new ArrayList<>();
         bidsByAccount.add(bid);
         bidsByAccountMap.put(bid.getAccountId(), bidsByAccount);
+        return bid.getId();
     }
 }
