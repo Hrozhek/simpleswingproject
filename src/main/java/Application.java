@@ -4,7 +4,7 @@ import service.account.AccountService;
 import service.account.AccountServiceImpl;
 import service.bid.BidService;
 import service.bid.BidServiceImpl;
-import uidelegates.RootWindow;
+import component.RootWindow;
 
 import javax.swing.SwingUtilities;
 

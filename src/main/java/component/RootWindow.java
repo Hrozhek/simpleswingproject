@@ -1,4 +1,4 @@
-package uidelegates;
+package component;
 
 import core.ApplicationConstants;
 import model.ui.BidTableModel;

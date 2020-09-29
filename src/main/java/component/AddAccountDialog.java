@@ -1,4 +1,4 @@
-package uidelegates;
+package component;
 
 import core.ApplicationConstants;
 import core.exceptions.DuplicateAccountNameException;
@@ -18,11 +18,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AddAccountDialog extends JDialog {
-    private AccountService accountService;
+    private final AccountService accountService;
 
     private JTextField nameTextField;
-    private JButton cancelButton;
-    private JButton saveButton;
 
     private boolean newAccountAvailable;
 
@@ -43,12 +41,12 @@ public class AddAccountDialog extends JDialog {
         nameTextField.setToolTipText("Enter account name");
 
         JPanel buttonPanel = new JPanel();
-        cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> dispose());
         buttonPanel.add(cancelButton);
 
         ActionListener saveActionListener = new SaveActionListener();
-        saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Save");
         saveButton.addActionListener(saveActionListener);
         buttonPanel.add(saveButton);
 
@@ -63,7 +61,7 @@ public class AddAccountDialog extends JDialog {
     }
 
     private class SaveActionListener implements ActionListener {
-        private JLabel errorMessage = new JLabel();
+        private final JLabel errorMessage = new JLabel();
 
         @Override
         public void actionPerformed(ActionEvent event) {

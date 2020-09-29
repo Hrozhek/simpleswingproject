@@ -1,11 +1,10 @@
-package uidelegates;
+package component;
 
 import core.ApplicationConstants;
 import dto.bid.BidDto;
 import service.bid.BidService;
 import utils.PurchaseCostCalculator;
 
-import javax.swing.BoxLayout;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -15,14 +14,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.WindowConstants;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.math.BigDecimal;
 
 public class AddBidDialog extends JDialog {
-    private static final int SPRING_LAYOUT_CONSTRAINT = 5;
+    private static final int SPRING_LAYOUT_CONSTRAINT = 10;
     private static final String STOCK_NAME_PATTERN = "[A-Z]{1,4}";
-
+    private static final Dimension ADD_BID_DIMENSION = new Dimension(500, 300);
     private final Long accountId;
     private final BidService bidService;
 
@@ -45,8 +44,6 @@ public class AddBidDialog extends JDialog {
         this.bidService = bidService;
         prepareTextFieldsAndButtons();
         initListeners();
-//        initUI_SpringLayout_Not_Working();
-        //todo
         initUI();
     }
 
@@ -79,9 +76,6 @@ public class AddBidDialog extends JDialog {
             if (stockName == null || stockQuantity == null || bidPrice == null) {
                 String msg = "Please enter stock name, stock quantity and bid price before press \"Send\"";
                 errorMessageLabel.setText(msg);
-                //todo
-//                getContentPane().add(errorMessageLabel);
-//                pack();
                 return;
             }
             BidDto dto = new BidDto(accountId, stockName, BigDecimal.valueOf(bidPrice), stockQuantity);
@@ -92,51 +86,46 @@ public class AddBidDialog extends JDialog {
         cancelButton.addActionListener(e -> dispose());
     }
 
-    //todo
-    private void initUI_SpringLayout_Not_Working() {
+    private void initUI() {
         Container rootContainer = getContentPane();
         SpringLayout layout = new SpringLayout();
 
         JPanel stockNamePanel = new JPanel();
         JLabel stockNameLabel = new JLabel("Enter name of stock:");
         stockNameLabel.setLabelFor(stockNameTextField);
-        putHorizontalLayoutConstraints(layout, stockNameLabel, stockNameTextField);
         stockNamePanel.add(stockNameLabel);
         stockNamePanel.add(stockNameTextField);
-        putVerticalLayoutConstraints(layout, rootContainer, stockNamePanel);
+        putBordersBetweenFarElements(layout, rootContainer, stockNamePanel, true);
 
         JPanel stockQuantityPanel = new JPanel();
         JLabel stockQuantityLabel = new JLabel("Enter quantity of stocks:");
         stockQuantityLabel.setLabelFor(stockQuantityTextField);
-        putHorizontalLayoutConstraints(layout, stockQuantityLabel, stockQuantityTextField);
         stockQuantityPanel.add(stockQuantityLabel);
         stockQuantityPanel.add(stockQuantityTextField);
-        putVerticalLayoutConstraints(layout, stockNamePanel, stockQuantityPanel);
+        putVerticalLayoutConstraints(layout, stockQuantityPanel, stockNamePanel);
 
         JPanel bidPricePanel = new JPanel();
         JLabel bidPriceLabel = new JLabel("Enter price for one stock:");
         bidPriceLabel.setLabelFor(bidPriceTextField);
-        putHorizontalLayoutConstraints(layout, bidPriceLabel, bidPriceTextField);
         bidPricePanel.add(bidPriceLabel);
         bidPricePanel.add(bidPriceTextField);
-        putVerticalLayoutConstraints(layout, stockQuantityPanel, bidPricePanel);
+        putVerticalLayoutConstraints(layout, bidPricePanel, stockQuantityPanel);
 
         JPanel purchaseCostPanel = new JPanel();
         JLabel purchaseCostLabel = new JLabel("Purchase cost:");
         purchaseCostLabel.setLabelFor(purchaseCostValue);
-        putHorizontalLayoutConstraints(layout, purchaseCostLabel, purchaseCostValue);
         purchaseCostPanel.add(purchaseCostLabel);
         purchaseCostPanel.add(purchaseCostValue);
-        putVerticalLayoutConstraints(layout, bidPricePanel, purchaseCostPanel);
+        putVerticalLayoutConstraints(layout, purchaseCostPanel, bidPricePanel);
 
         errorMessageLabel = new JLabel();
-        putVerticalLayoutConstraints(layout, purchaseCostPanel, errorMessageLabel);
+        putVerticalLayoutConstraints(layout, errorMessageLabel, purchaseCostPanel);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(cancelButton);
         buttonPanel.add(sendButton);
-        putHorizontalLayoutConstraints(layout, cancelButton, sendButton);
-        putVerticalLayoutConstraints(layout, errorMessageLabel, buttonPanel);
+        putVerticalLayoutConstraints(layout, buttonPanel, errorMessageLabel);
+        putBordersBetweenFarElements(layout, buttonPanel, rootContainer, false);
 
         rootContainer.setLayout(layout);
         rootContainer.add(stockNamePanel);
@@ -145,48 +134,7 @@ public class AddBidDialog extends JDialog {
         rootContainer.add(purchaseCostPanel);
         rootContainer.add(errorMessageLabel);
         rootContainer.add(buttonPanel);
-//        setResizable(false);
-        pack();
-        setVisible(true);
-    }
-
-    private void initUI() {
-        Container rootContainer = getContentPane();
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        rootContainer.setLayout(new BoxLayout(rootContainer, BoxLayout.Y_AXIS));
-
-        JPanel stockNamePanel = new JPanel();
-        JLabel stockNameLabel = new JLabel("Enter name of stock:");
-        stockNamePanel.add(stockNameLabel);
-        stockNamePanel.add(stockNameTextField);
-
-        JPanel stockQuantityPanel = new JPanel();
-        JLabel stockQuantityLabel = new JLabel("Enter quantity of stocks:");
-        stockQuantityPanel.add(stockQuantityLabel);
-        stockQuantityPanel.add(stockQuantityTextField);
-
-        JPanel bidPricePanel = new JPanel();
-        JLabel bidPriceLabel = new JLabel("Enter price for one stock:");
-        bidPricePanel.add(bidPriceLabel);
-        bidPricePanel.add(bidPriceTextField);
-
-        JPanel purchaseCostPanel = new JPanel();
-        JLabel purchaseCostLabel = new JLabel("Purchase cost:");
-        purchaseCostPanel.add(purchaseCostLabel);
-        purchaseCostPanel.add(purchaseCostValue);
-
-        errorMessageLabel = new JLabel();
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(cancelButton);
-        buttonPanel.add(sendButton);
-
-        rootContainer.add(stockNamePanel);
-        rootContainer.add(stockQuantityPanel);
-        rootContainer.add(bidPricePanel);
-        rootContainer.add(purchaseCostPanel);
-        rootContainer.add(errorMessageLabel);
-        rootContainer.add(buttonPanel);
+        rootContainer.setPreferredSize(ADD_BID_DIMENSION);
         setResizable(false);
         pack();
         setVisible(true);
@@ -201,11 +149,15 @@ public class AddBidDialog extends JDialog {
         return value.toString();
     }
 
-    private void putVerticalLayoutConstraints(SpringLayout layout, Container from, Container to) {
-        layout.putConstraint(SpringLayout.SOUTH, from, SPRING_LAYOUT_CONSTRAINT, SpringLayout.NORTH, to);
+    private void putBordersBetweenFarElements(SpringLayout layout, Container from, Container to, boolean isFirst) {
+        String border = SpringLayout.SOUTH;
+        if (isFirst)
+            border = SpringLayout.NORTH;
+        layout.putConstraint(border, from, SPRING_LAYOUT_CONSTRAINT, border, to);
     }
-    private void putHorizontalLayoutConstraints(SpringLayout layout, Container from, Container to) {
-        layout.putConstraint(SpringLayout.EAST, from, SPRING_LAYOUT_CONSTRAINT, SpringLayout.WEST, to);
+
+    private void putVerticalLayoutConstraints(SpringLayout layout, Container from, Container to) {
+        layout.putConstraint(SpringLayout.NORTH, from, SPRING_LAYOUT_CONSTRAINT, SpringLayout.SOUTH, to);
     }
 
     private void addVerifierError(String exampleOfValue) {
