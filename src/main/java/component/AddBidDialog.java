@@ -4,6 +4,7 @@ import core.ApplicationConstants;
 import dto.bid.BidDto;
 import service.bid.BidService;
 import utils.PurchaseCostCalculator;
+import utils.SpringLayoutUtils;
 
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -19,7 +20,6 @@ import java.awt.Dimension;
 import java.math.BigDecimal;
 
 public class AddBidDialog extends JDialog {
-    private static final int SPRING_LAYOUT_CONSTRAINT = 10;
     private static final String STOCK_NAME_PATTERN = "[A-Z]{1,4}";
     private static final Dimension ADD_BID_DIMENSION = new Dimension(500, 300);
     private final Long accountId;
@@ -95,37 +95,37 @@ public class AddBidDialog extends JDialog {
         stockNameLabel.setLabelFor(stockNameTextField);
         stockNamePanel.add(stockNameLabel);
         stockNamePanel.add(stockNameTextField);
-        putBordersBetweenFarElements(layout, rootContainer, stockNamePanel, true);
+        SpringLayoutUtils.putBordersBetweenFarElements(layout, rootContainer, stockNamePanel, true);
 
         JPanel stockQuantityPanel = new JPanel();
         JLabel stockQuantityLabel = new JLabel("Enter quantity of stocks:");
         stockQuantityLabel.setLabelFor(stockQuantityTextField);
         stockQuantityPanel.add(stockQuantityLabel);
         stockQuantityPanel.add(stockQuantityTextField);
-        putVerticalLayoutConstraints(layout, stockQuantityPanel, stockNamePanel);
+        SpringLayoutUtils.putVerticalLayoutConstraints(layout, stockQuantityPanel, stockNamePanel);
 
         JPanel bidPricePanel = new JPanel();
         JLabel bidPriceLabel = new JLabel("Enter price for one stock:");
         bidPriceLabel.setLabelFor(bidPriceTextField);
         bidPricePanel.add(bidPriceLabel);
         bidPricePanel.add(bidPriceTextField);
-        putVerticalLayoutConstraints(layout, bidPricePanel, stockQuantityPanel);
+        SpringLayoutUtils.putVerticalLayoutConstraints(layout, bidPricePanel, stockQuantityPanel);
 
         JPanel purchaseCostPanel = new JPanel();
         JLabel purchaseCostLabel = new JLabel("Purchase cost:");
         purchaseCostLabel.setLabelFor(purchaseCostValue);
         purchaseCostPanel.add(purchaseCostLabel);
         purchaseCostPanel.add(purchaseCostValue);
-        putVerticalLayoutConstraints(layout, purchaseCostPanel, bidPricePanel);
+        SpringLayoutUtils.putVerticalLayoutConstraints(layout, purchaseCostPanel, bidPricePanel);
 
         errorMessageLabel = new JLabel();
-        putVerticalLayoutConstraints(layout, errorMessageLabel, purchaseCostPanel);
+        SpringLayoutUtils.putVerticalLayoutConstraints(layout, errorMessageLabel, purchaseCostPanel);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(cancelButton);
         buttonPanel.add(sendButton);
-        putVerticalLayoutConstraints(layout, buttonPanel, errorMessageLabel);
-        putBordersBetweenFarElements(layout, buttonPanel, rootContainer, false);
+        SpringLayoutUtils.putVerticalLayoutConstraints(layout, buttonPanel, errorMessageLabel);
+        SpringLayoutUtils.putBordersBetweenFarElements(layout, buttonPanel, rootContainer, false);
 
         rootContainer.setLayout(layout);
         rootContainer.add(stockNamePanel);
@@ -147,17 +147,6 @@ public class AddBidDialog extends JDialog {
     private String getCurrentPurchaseCostValue() {
         BigDecimal value = PurchaseCostCalculator.calculate(BigDecimal.valueOf(bidPrice), stockQuantity);
         return value.toString();
-    }
-
-    private void putBordersBetweenFarElements(SpringLayout layout, Container from, Container to, boolean isFirst) {
-        String border = SpringLayout.SOUTH;
-        if (isFirst)
-            border = SpringLayout.NORTH;
-        layout.putConstraint(border, from, SPRING_LAYOUT_CONSTRAINT, border, to);
-    }
-
-    private void putVerticalLayoutConstraints(SpringLayout layout, Container from, Container to) {
-        layout.putConstraint(SpringLayout.NORTH, from, SPRING_LAYOUT_CONSTRAINT, SpringLayout.SOUTH, to);
     }
 
     private void addVerifierError(String exampleOfValue) {
@@ -288,5 +277,3 @@ public class AddBidDialog extends JDialog {
         }
     }
 }
-
-

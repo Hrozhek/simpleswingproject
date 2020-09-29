@@ -13,14 +13,15 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public final class BidRepoMapImpl implements BidRepo {
-    private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
     private static volatile BidRepoMapImpl instance;
     private final Map<Long, Bid> bidMap;
     private final Map<Long, List<Bid>> bidsByAccountMap;
+    private final ReadWriteLock lock;
 
     private BidRepoMapImpl() {
         bidMap = new HashMap<>();
         bidsByAccountMap = new HashMap<>();
+        lock = new ReentrantReadWriteLock();
     }
 
     public static BidRepoMapImpl getInstance() {
@@ -36,25 +37,21 @@ public final class BidRepoMapImpl implements BidRepo {
     @Override
     public Bid findById(long id) {
         try {
-            LOCK.readLock().lock();
+            lock.readLock().lock();
             return bidMap.get(id);
         } finally {
-            LOCK.readLock().unlock();
+            lock.readLock().unlock();
         }
     }
 
     @Override
     public List<Bid> findAllByAccountId(long id) {
-        List<Bid> bids;
         try {
-            LOCK.readLock().lock();
-            bids = bidsByAccountMap.get(id);
+            lock.readLock().lock();
+            return bidsByAccountMap.getOrDefault(id, Collections.emptyList());
         } finally {
-            LOCK.readLock().unlock();
+            lock.readLock().unlock();
         }
-        if (bids == null)
-            return Collections.emptyList();
-        return bids;
     }
 
     @Override
@@ -62,20 +59,15 @@ public final class BidRepoMapImpl implements BidRepo {
         Bid bid = BidDtoToBidConverter.convert(bidDto);
         List<Bid> bidsByAccount;
         try {
-            LOCK.readLock().lock();
+            lock.writeLock().lock();
             bidMap.put(bid.getId(), bid);
             bidsByAccount = bidsByAccountMap.get(bid.getAccountId());
-        } finally {
-            LOCK.readLock().unlock();
-        }
-        if (bidsByAccount == null)
-            bidsByAccount = new ArrayList<>();
-        bidsByAccount.add(bid);
-        try {
-            LOCK.writeLock().lock();
+            if (bidsByAccount == null)
+                bidsByAccount = new ArrayList<>();
+            bidsByAccount.add(bid);
             bidsByAccountMap.put(bid.getAccountId(), bidsByAccount);
         } finally {
-            LOCK.writeLock().unlock();
+            lock.writeLock().unlock();
         }
         return bid.getId();
     }
