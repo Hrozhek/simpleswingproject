@@ -11,16 +11,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public final class BidRepoMapImpl implements BidRepo {
     private static volatile BidRepoMapImpl instance;
     private final Map<Long, Bid> bidMap;
-    private final Map<Long, List<Bid>> bidsByAccountMap;
+    private final Map<Long, List<Long>> bidsIdByAccountMap;
     private final ReadWriteLock lock;
 
     private BidRepoMapImpl() {
         bidMap = new HashMap<>();
-        bidsByAccountMap = new HashMap<>();
+        bidsIdByAccountMap = new HashMap<>();
         lock = new ReentrantReadWriteLock();
     }
 
@@ -48,7 +49,10 @@ public final class BidRepoMapImpl implements BidRepo {
     public List<Bid> findAllByAccountId(long id) {
         try {
             lock.readLock().lock();
-            return bidsByAccountMap.getOrDefault(id, Collections.emptyList());
+            List<Long> bidsId = bidsIdByAccountMap.getOrDefault(id, Collections.emptyList());
+            return bidsId.stream()
+                .map(bidMap::get)
+                .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
         }
@@ -57,15 +61,11 @@ public final class BidRepoMapImpl implements BidRepo {
     @Override
     public long save(BidDto bidDto) {
         Bid bid = BidDtoToBidConverter.convert(bidDto);
-        List<Bid> bidsByAccount;
         try {
             lock.writeLock().lock();
             bidMap.put(bid.getId(), bid);
-            bidsByAccount = bidsByAccountMap.get(bid.getAccountId());
-            if (bidsByAccount == null)
-                bidsByAccount = new ArrayList<>();
-            bidsByAccount.add(bid);
-            bidsByAccountMap.put(bid.getAccountId(), bidsByAccount);
+            bidsIdByAccountMap.putIfAbsent(bid.getAccountId(), new ArrayList<>());
+            bidsIdByAccountMap.get(bid.getAccountId()).add(bid.getId());
         } finally {
             lock.writeLock().unlock();
         }
